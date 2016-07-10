@@ -7,6 +7,8 @@ import DocumentRSOM
 from flask.json import jsonify
 import uuid
 from numpy import integer
+from datab import db
+
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf'])
 
@@ -52,6 +54,10 @@ def upload_file():
             DSOM.train()
             separatedText = DSOM.getDataset()
             tfIDFArray = DSOM.tfIDFArray()
+            from datab import Upload
+            thisUpload = Upload(filename, time()-t0, useGPUBoolean, mapSide)
+            db.session.add(thisUpload)
+            db.session.commit()
             return jsonify(usedGPU=useGPUBoolean, timeTaken=time() - t0, clusters=DSOM.getClusters(), dataset=separatedText, tfIDF=tfIDFArray )
         else:
             return redirect(url_for('uploaded_file',
