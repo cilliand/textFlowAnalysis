@@ -1,0 +1,103 @@
+<!doctype html>
+<head>
+<script   src="https://code.jquery.com/jquery-2.2.4.js"   integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="   crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">    
+
+<title>About</title>
+<style>
+#graphPanel {
+    text-align: center;
+}
+#graph {
+    display: inline-block;
+}
+#downloadPDF {
+    display: none;
+}
+#textarea {
+    word-wrap: break-word;
+}
+.node {
+    position: relative;
+    width: 100%;
+    display: inline-block;
+}
+.point {
+    position: relative;
+    float: left;
+    margin: 0.5em;
+}
+
+.graphNode {
+    width: 2em;
+    height: 2em;
+    background-color: red;
+    margin: 1em;
+    float: left;
+}
+</style>
+</head>
+<body>
+<div id="container" class="container">
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">Narrative-Flow Analysis</a>
+        </div>
+        <ul class="nav navbar-nav">
+        <li><a href="/">Home</a></li>
+        <li  class="active"><a href="about">About<span class="sr-only">(current)</span></a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="row">
+        <div class="col-md-12 text-center">
+            
+        </div>
+    </div>
+    <div class="row">
+        
+        <div class="col-md-6">
+            <h3>About</h3>
+            <p>This program can be used to give an idea of how well the content
+            of your document flows.</p>
+            
+            <p>Uploading a doucment will results in a machine learning technique
+            being evoked to determine how closely each paragraph is related
+            to the next paragraph.</p>
+            
+            <p>You can then export the colour-coded results as a PDF. The suggestion would
+            be that the better the flow the less the colours should change 
+            between paragraphs. Lots of colour change suggests that the paragraphs
+            are not necessarily connected.</p>
+            
+            <p>You can also investigated how the results were obtained further by
+            clicking on the nodes presented in the SOM nodes panel, which will
+            then show the elements that have been put in the node in the middle panel.
+            Finally, the words extracted by TF-IDF will be presented, as well as the full 
+            text that it related to in the two panels on the right side of the page.</p>
+            
+            <h3>Technologies Used</h3>
+            <p>The following technologies have been used in this implementation:<p>
+            <ul>
+                <li>Python</li>
+                <li>AWS</li>
+                <li>CUDA</li>
+                <li>Flask</li>
+                <li>JQuery</li>
+                <li>Bootstrap</li>
+            </ul>
+        </div>
+        <div class="col-md-6">    
+            <h3>Created By</h3>
+            <p><a href="http://www,cilliandudley.com">Cillian Dudley</a> as part 
+            of a MSc Advanced Computer Science at University of Reading.<p>
+            <p>Feel free to email me, cillian AT cilliandudley.com, with any quesitons or suggestions.
+            <p>
+        </div>
+    </div>
+</div>
+
+</body>
+    

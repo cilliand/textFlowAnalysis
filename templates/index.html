@@ -1,0 +1,143 @@
+<!doctype html>
+<head>
+<script   src="https://code.jquery.com/jquery-2.2.4.js"   integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="   crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">    
+
+
+<script src="static/jspdf.min.js"></script>
+<script src="static/ajaxPost.js"></script>
+<title>Upload new File</title>
+<style>
+#graphPanel {
+    text-align: center;
+}
+#graph {
+    display: inline-block;
+}
+#downloadPDF {
+    display: none;
+}
+#textarea {
+    word-wrap: break-word;
+}
+.node {
+    position: relative;
+    width: 100%;
+    display: inline-block;
+}
+.point {
+    position: relative;
+    float: left;
+    margin: 0.5em;
+}
+
+.graphNode {
+    width: 2em;
+    height: 2em;
+    background-color: red;
+    margin: 1em;
+    float: left;
+}
+</style>
+</head>
+<body>
+<div id="container" class="container">
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">Narrative-Flow Analysis</a>
+        </div>
+        <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Home<span class="sr-only">(current)</span></a></li>
+        <li><a href="about">About</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="row">
+        <div class="col-md-12 text-center">
+            
+        </div>
+    </div>
+    <div class="row">
+        <form action="" method=post enctype=multipart/form-data>
+        <div class="col-md-4">
+            <h3>Upload New File</h3>
+            <input id="file" type="file" name="file"> <br/>
+            <button id="upload" class="btn btn-primary">Upload</button>
+            <span id="working" ></span>
+        </div>
+        <div class="col-md-6">
+            <h3>Settings</h3>
+            <label for="useGPU">Use GPU?</label>
+            <input type="checkbox" id="useGPU"><br>
+            <!-- <label for="detectHeaders">Detect Headers/Footers?</label>
+            <input type="checkbox" id="detectHeaders"><br> -->
+            <label for="size">Size of SOM Side</label>
+            <input id="mapSide" type="number" value="2" name="size" min="2" max="5"><br>
+        </div>
+        </form>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <h3>Results</h3>
+        </div>
+        <div class="col-md-4">
+            <button id="downloadPDF" type="button" class="btn btn-success">Download PDF</button>
+        </div>
+        
+    </div> 
+        <div class="row" id="output-row">
+            <div class="col-md-4">
+             <div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">SOM Nodes</h3>
+  </div>
+            <div class="panel-body" id="graphPanel">
+            <div id="graph"></div>
+            </div>
+            </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Elements in this Node</h3>
+  </div>
+                <div id="somArea" class="panel-body">
+                </div>
+                </div>
+            </div>
+            <div class="col-md-4" id="textareaCol">
+                <div id="textarea" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingOne">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          Extracted Words
+        </a>
+      </h4>
+    </div>
+    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+      <div class="panel-body" id="extractedTFIDF"></div>
+    </div>
+  </div>
+   <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingTwo">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">          
+        Extracted Text
+        </a>
+      </h4>
+    </div>
+    <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+      <div class="panel-body" id="extractedText"></div>
+    </div>
+  </div>'
+                </div>
+            </div>
+        </div>
+
+</div>
+
+</body>
+    
