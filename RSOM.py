@@ -134,7 +134,7 @@ class SOM(object):
     # Print function for Numpy based optimization functions  
     def _print_cost(self,X2, epoch, num_epoch):
         D = self._euq_dist(X2, self.X)
-        print "epoch", epoch, "of", num_epoch, " cost: ", np.linalg.norm(D.min(0), ord=1) / self.X.shape[0]
+        #print "epoch", epoch, "of", num_epoch, " cost: ", np.linalg.norm(D.min(0), ord=1) / self.X.shape[0]
     
     
     def set_params(self, num_epoch):
@@ -365,7 +365,7 @@ class SOM(object):
 
         U = self.set_params(num_epoch)
         for epoch in range(num_epoch):
-            print 'Epoch --- ', epoch
+            #print 'Epoch --- ', epoch
             update_rate = U['H_maps'][epoch]
             learn_rate = U['alphas'][epoch]
             win_counts = np.zeros((self.num_units))
@@ -423,7 +423,7 @@ class SOM(object):
         U = self.set_params(num_epoch)
         X2 = (self.X**2).sum(1)[:, None]
         for epoch in range(num_epoch):
-            print 'Epoch --- ', epoch
+            #print 'Epoch --- ', epoch
             update_rate = U['H_maps'][epoch]
             learn_rate = U['alphas'][epoch]
             # randomize batch order

@@ -11,6 +11,8 @@ $(document).ready(function() {
             $("#somArea").empty();
             $("#extractedText").empty();
             $("#extractedTFIDF").empty();
+            $(".flash").empty();
+            $(".flash").hide();
             $("#downloadPDF").hide();
             objHolder = null;
             var formD = new FormData();
@@ -30,7 +32,13 @@ $(document).ready(function() {
                 },
                 error: function(error) {
                     $("#working").html("Didn't work.");
-                    console.log(error);
+                    if(error.status == 413){
+                        $(".flash").html("File is too big.");
+                        $(".flash").show();
+                    } else {
+                        $(".flash").html(error.status+ " " + error.statusText);
+                        $(".flash").show();
+                    }
                 }
             });
         });
@@ -57,6 +65,13 @@ function displayCluster(eventData){
 }
 var objHolder;
 function graphResponse(response){   
+
+    if(response.hasOwnProperty("flaskerror")){
+         $(".flash").html(response.flaskerror);
+         $(".flash").show();
+         $("#working").html("Didn't work.");
+         return false;
+     }
     var pointCount = 0;
     
     for(var i = 0; i < Object.keys(response.clusters).length; i++){

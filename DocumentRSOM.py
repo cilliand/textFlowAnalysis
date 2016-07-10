@@ -39,15 +39,15 @@ class DSOM(object):
     #     print()
     #     print("Extracting features from the dataset using a sparse vectorizer")
         #t0 = time()
-        self.vectorizer = TfidfVectorizer(max_df=0.5, max_features=1000,
+        self.vectorizer = TfidfVectorizer(max_df=0.5, max_features=100,
                                          min_df=2, stop_words='english',
                                          use_idf=True, sublinear_tf=True)
         self.Y = self.vectorizer.fit_transform(self.dataset)
         
-        #arrayTrain = X.toarray()
-        svd = TruncatedSVD(n_components=100, random_state=42)
-        X = svd.fit_transform(self.Y)
-        self.arrayTrain = X
+        self.arrayTrain = self.Y.toarray()
+        #svd = TruncatedSVD(n_components=100, random_state=42)
+        #X = svd.fit_transform(self.Y)
+        #self.arrayTrain = X
         #print("done in %fs" % (time() - t0))
         #print("n_samples: %d, n_features: %d" % X.shape)
         #print()
