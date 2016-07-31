@@ -1,4 +1,5 @@
 $(document).ready(function() {
+         
         $("#downloadPDF").click(function(e) {
         e.preventDefault();
             generatePDF();
@@ -19,6 +20,7 @@ $(document).ready(function() {
             var file = document.getElementById("file");
             formD.append('file', file.files[0]);
             formD.append('useGPU', $('#useGPU').is(':checked'));
+            formD.append('useStemmer', $('#useStemmer').is(':checked'));
             formD.append('mapSide', $('#mapSide').val());            
             $("#working").html("Working on it....");
             $.ajax({
@@ -107,6 +109,7 @@ function graphResponse(response){
     $( ".graphNode:nth-child("+sqSide+"n+1)" ).css("clear", "left");
     $("#working").html("Done - " + parseFloat(response.timeTaken).toFixed(4)+" secs.");
     $("#downloadPDF").show();
+    graphResult(response);
 }
 
 $(window).scroll(function(){

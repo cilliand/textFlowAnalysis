@@ -1,0 +1,254 @@
+<!doctype html>
+<head>
+<script   src="https://code.jquery.com/jquery-2.2.4.js"   integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="   crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">    
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+
+
+<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<link href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" rel="stylesheet">
+<script src="static/jspdf.min.js"></script>
+<script src="static/ajaxPost.js"></script>
+<script src="static/graph.js"></script>
+<title>Upload new File</title>
+<style>
+
+#d3-col{
+    text-align: center;
+}
+.meanline {
+ stroke: red;
+ stroke-dasharray: 10;
+ fill: none;
+ stroke-width: 1;
+ clip-path: url(#clip);
+}
+.stdline {
+ stroke: darkgreen;
+ stroke-dasharray: 5;
+ fill: none;
+ stroke-width: 1;
+ clip-path: url(#clip);
+}
+path {
+                stroke: steelblue;
+                stroke-width: 1;
+                fill: none;
+            }
+            
+            .axis {
+              shape-rendering: crispEdges;
+            }
+
+            .x.axis line {
+              stroke: lightgrey;
+            }
+
+            .x.axis .minor {
+              stroke-opacity: .5;
+            }
+
+            .x.axis path {
+              display: none;
+            }
+
+            .y.axis line, .y.axis path {
+              fill: none;
+              stroke: #000;
+            }
+#graphPanel {
+    text-align: center;
+}
+#graph {
+    display: inline-block;
+}
+#downloadPDF {
+    display: none;
+}
+#textarea {
+    word-wrap: break-word;
+}
+.node {
+    position: relative;
+    width: 100%;
+    display: inline-block;
+}
+.point {
+    position: relative;
+    float: left;
+    margin: 0.5em;
+}
+
+.graphNode {
+    width: 2em;
+    height: 2em;
+    background-color: red;
+    margin: 1em;
+    float: left;
+}
+</style>
+<script>
+$(document).ready(function(){
+   $.ajax({
+                //processData: false,
+                //data: formD,
+                type: 'POST',
+                url: "/uploads_request/",
+                //contentType: false,
+                success: function(response) {
+                    $("#loading").hide();
+                    for(var i = 0; i < response.results.length; i++){
+                        var json = JSON.parse(response.results[i]);
+                        var rowString = '<tr>';
+                        rowString += '<td><a href="uploads/'+json['filename']+'">'+json['filename']+'</a></td>';
+                        rowString += '<td>'+json['timeTaken']+'</a></td>';
+                        rowString += '<td class="text-capitalize">'+json['usedGPU']+'</a></td>';
+                        rowString += '<td>'+json['created']+'</a></td>';
+                        rowString += '<td>'+Object.keys(json.clusters).length+'</a></td>';;
+                        rowString += '<td><button class="btn btn-primary btn-sm" id="regen_'+i+'">'+"Regenerate"+'</button></td>';
+                        rowString += '<td><button class="btn btn-primary btn-sm" id="modify_'+i+'">'+"Modify"+'</button></td>';
+                        rowString += '</tr>'; 
+                        $('#resultTable > tbody').append(rowString);
+                        $("#regen_"+i).bind("click", json, regenerate);
+                        $("#modify_"+i).bind("click", json, regenerate);
+                        
+                    }
+                    $('#resultTable').DataTable();
+                },
+                error: function(error) {
+                    $("#working").html("Didn't work.");
+                    if(error.status == 413){
+                        $(".flash").html("File is too big.");
+                        $(".flash").show();
+                    } else {
+                        $(".flash").html(error.status+ " " + error.statusText);
+                        $(".flash").show();
+                    }
+                }
+            }); 
+            
+            
+});
+
+function regenerate(eventData){
+            console.log(eventData);
+            var json = eventData.data;
+            $("#graph").empty();
+            $("#somArea").empty();
+            $("#extractedText").empty();
+            $("#extractedTFIDF").empty();
+            $(".flash").empty();
+            $(".flash").hide();
+            $("#downloadPDF").hide();
+            objHolder = null; 
+            objHolder = json; 
+            graphResponse( json );
+}
+</script>
+</head>
+<body>
+<div id="container" class="container">
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">Narrative-Flow Analysis</a>
+        </div>
+        <ul class="nav navbar-nav">
+        <li><a href="/">Home</a></li>
+        <li class="active"><a href="uploads">Uploads <span class="sr-only">(current)</span></a></li>
+        <li><a href="about">About</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="row">
+        <div class="col-md-12 text-center">
+                <div class="flash alert-danger" style="display: none;"></div>         
+        </div>
+        
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+        <h3>Previous Examples</h3>
+            <div id="loading" class="col-md-12 text-center" ><img src="static/gear.gif"/></div>
+            <table class="table" id="resultTable">
+            <thead>
+            <tr>
+            <th>UUID</th><th>Time Taken</th><th>Used GPU?</th><th>Date/Time</th><th>Nodes</th><th></th><th></th>
+            </tr></thead>
+            <tbody>
+            </tbody>
+            </table>
+        </div>
+        
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <h3>Results</h3>
+        </div>
+        <div class="col-md-4">
+            <button id="downloadPDF" type="button" class="btn btn-success">Download PDF</button>
+        </div>
+        
+    </div> 
+    <div class="row" id="d3-row">
+        <div class="col-md-12" id="d3-col">
+            
+        </div>
+    </div>
+  
+        <div class="row" id="output-row">
+            <div class="col-md-4">
+             <div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">SOM Nodes</h3>
+  </div>
+            <div class="panel-body" id="graphPanel">
+            <div id="graph"></div>
+            </div>
+            </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Elements in this Node</h3>
+  </div>
+                <div id="somArea" class="panel-body">
+                </div>
+                </div>
+            </div>
+            <div class="col-md-4" id="textareaCol">
+                <div id="textarea" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingOne">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          Extracted Words
+        </a>
+      </h4>
+    </div>
+    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+      <div class="panel-body" id="extractedTFIDF"></div>
+    </div>
+  </div>
+   <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingTwo">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">          
+        Extracted Text
+        </a>
+      </h4>
+    </div>
+    <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+      <div class="panel-body" id="extractedText"></div>
+    </div>
+  </div>'
+                </div>
+            </div>
+        </div>
+
+</div>
+
+</body>
+    
