@@ -4,3 +4,4 @@ Often termed a topographical feature map, Kohonen networks can be visualised wit
 
 This project makes use of web interfaces as a means of displaying the results of the content flow detected by the Kohonen network, GPU computing in an attempt to speed up the training time of the Kohonen networks and desktop computing to evaluate possible measures that may be suitable for future work related to intra-document content flow such as the mean distances, kurtosis and number of node jumps.
 
+![alt text](/master/web2.png?raw=true)
